@@ -37,8 +37,8 @@ client.connect((err) => {
     res.send(postData);
   });
 
-  app.get("/services", async (req, res) => {
-    const findData = await findAllData(servicesCollection);
+  app.get("/services", (req, res) => {
+    const findData = findAllData(servicesCollection);
     res.send(findData);
   });
 
