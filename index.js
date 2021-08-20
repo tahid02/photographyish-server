@@ -95,6 +95,10 @@ client.connect((err) => {
 // custom error handler
 app.use(errorHandler);
 
+app.get("/", (req, res) => {
+  res.send("hello world");
+});
+
 app.listen(port, () => {
   console.log(`listening at http://localhost:${port}`);
 });
