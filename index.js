@@ -112,7 +112,7 @@ client.connect((err) => {
     ordersCollection.updateOne(
       { _id: ObjectID(req.params.id) },
       {
-        $set: { rentStatus:req.body.status }
+        $set: { orderStatus:req.body.updatedStatus }
       }
     )
       .then(result => {
