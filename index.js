@@ -105,6 +105,25 @@ client.connect((err) => {
       });
   });
 
+   app.patch('/statusUpdate/:id', (req, res) => {
+    console.log(req.body);
+    // console.log(req.params.id);
+    
+    ordersCollection.updateOne(
+      { _id: ObjectID(req.params.id) },
+      {
+        $set: { rentStatus:req.body.status }
+      }
+    )
+      .then(result => {
+        console.log(result);
+        res.send(result.modifiedCount > 0)
+      })
+      .catch(err => console.log(err))
+
+  })
+
+
   //   client.close();
 });
 // adminCollection
