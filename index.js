@@ -26,45 +26,64 @@ client.connect((err) => {
   const servicesCollection = client
     .db("photographyishDB")
     .collection("services");
-  const adminCollection = client.db("photographyishDB").collection("admins");
+  const adminsCollection = client.db("photographyishDB").collection("admins");
   const ordersCollection = client.db("photographyishDB").collection("orders");
   console.log("database connected");
 
   // perform actions on the collection here
 
-  app.post("/addServices", async (req, res) => {
-    const postData = await insertData(servicesCollection, req.body);
-    res.send(postData);
+  app.post("/addServices", (req, res) => {
+    const newServices = req.body;
+    // console.log('adding new services: ', newServices)
+    servicesCollection
+      .insertOne(newServices)
+      .then((result) => {
+        // console.log('inserted count', result.insertedCount);
+        res.send(result.insertedCount > 0);
+      })
+      .catch((err) => console.log({ err }));
   });
 
   app.get("/services", (req, res) => {
-    const findData = findAllData(servicesCollection);
-    res.send(findData);
+    servicesCollection.find({}).toArray((err, services) => {
+      res.send(services);
+    });
   });
 
-  app.get("/checkOut/:id", async (req, res) => {
+  app.get("/checkOut/:id", (req, res) => {
     const id = ObjectID(req.params.id);
-    const paramData = await findFilteredData(servicesCollection, _id, id);
-    res.send(paramData[0]);
+    // console.log(id)
+    servicesCollection.find({ _id: id }).toArray((err, documents) => {
+      res.send(documents[0]);
+    });
   });
 
-  app.post("/addOrder", async (req, res) => {
-    const postData = await insertData(ordersCollection, req.body);
-    res.send(postData);
+  app.post("/addOrder", (req, res) => {
+    const newRent = req.body;
+    // console.log('adding new event: ', newRent)
+    ordersCollection
+      .insertOne(newRent)
+      .then((result) => {
+        // console.log('inserted count', result.insertedCount);
+        res.send(result.insertedCount > 0);
+      })
+      .catch((err) => console.log({ err }));
   });
 
-  app.get("/userOrder", async (req, res) => {
-    const paramData = await findFilteredData(
-      ordersCollection,
-      email,
-      req.query.email
-    );
-    res.send(paramData);
+  app.get("/userOrders", (req, res) => {
+    const queryEmail = req.query.email;
+    console.log("user orders", queryEmail);
+    ordersCollection.find({ email: queryEmail }).toArray((err, documents) => {
+      console.log(documents);
+      res.send(documents);
+    });
   });
 
-  app.get("/allOrder", async (req, res) => {
-    const findData = await findAllData(ordersCollection);
-    res.send(findData);
+  app.get("/allOrders", (req, res) => {
+    ordersCollection.find({}).toArray((err, documents) => {
+      // console.log(documents)
+      res.send(documents);
+    });
   });
 
   app.post("/isAdmin", (req, res) => {
