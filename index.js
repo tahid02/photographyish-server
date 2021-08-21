@@ -4,7 +4,7 @@ const { insertData } = require("./lib/postData");
 const { errorHandler } = require("./middleware/errorHandler");
 const cors = require("cors");
 require("dotenv").config();
-const { ObjectID } = require('mongodb')
+const { ObjectID } = require("mongodb");
 const MongoClient = require("mongodb").MongoClient;
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.z6ers.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
@@ -105,24 +105,24 @@ client.connect((err) => {
       });
   });
 
-   app.patch('/statusUpdate/:id', (req, res) => {
+  app.patch("/statusUpdate/:id", (req, res) => {
     console.log(req.body);
-    // console.log(req.params.id);
-    
-    ordersCollection.updateOne(
-      { _id: ObjectID(req.params.id) },
-      {
-        $set: { orderStatus:req.body.updatedStatus }
-      }
-    )
-      .then(result => {
+    console.log(req.params.id);
+
+    ordersCollection
+      .updateOne(
+        { _id: ObjectID(req.params.id) },
+        // { _id: ObjectID("611f91e12ea45e00168e8af2") },
+        {
+          $set: { orderStatus: "Done" },
+        }
+      )
+      .then((result) => {
         console.log(result);
-        res.send(result.modifiedCount > 0)
+        res.send(result.modifiedCount > 0);
       })
-      .catch(err => console.log(err))
-
-  })
-
+      .catch((err) => console.log(err));
+  });
 
   //   client.close();
 });
